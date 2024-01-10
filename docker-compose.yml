@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    networks:
+      - backend
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOOKEEPER_CLIENT_PORT=2181
+  kafka:
+    image: 'bitnami/kafka:latest'
+    hostname: localhost
+    networks:
+      - backend
+    ports:
+      - '9092:9092'
+      - '9093:9093'
+    depends_on: 
+      - zookeeper
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+
+networks:
+  backend:
